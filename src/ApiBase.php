@@ -70,6 +70,9 @@ abstract class ApiBase
     return $this->_client->post($call, $params);
   }
 
+  /**
+   * Set the auth header on the api client
+   */
   protected function _setAuthHeader()
   {
     $this->_client->addGlobalHeader(
