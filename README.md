@@ -97,7 +97,7 @@ Sometimes, your customers decide they no longer wish to use your product, in thi
     $options[‘full_refund’]//bool, is whole action refunded
     $options[‘reclaim’]//reserve,commission,both,none
     $options[‘force_reclaim’]//If commissions have already been paid out, setting this option will create a refund amount for paid commissions to be applied to the paycheck.  This option is not recommended, and you should have paychecks or reserves etc to a time after refunds can be taken from the affiliate.
-    $tnt->return($actionId | $actionReference,$type,$options); //bool
+    $tnt->refund($actionId | $actionReference,$type,$options); //bool
 
 Firing Pixels
 ---
