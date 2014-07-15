@@ -55,8 +55,10 @@ The visitor ID is placed in a cookie on your domain with the name of “TNT:VID�
     $visitorId = TntAffiliate::getVisitorId();
     //Create the reference
     $tnt->visitorReference(’reference’,$visitorId); //bool
-    Actions
-    The preferred method for tracking actions from your site is through curl.  This method provides the most accurate results for you and your affiliates.  Affiliate tracking pixels can also be handled by you however you like to manage them.
+    
+Actions
+---
+The preferred method for tracking actions from your site is through curl.  This method provides the most accurate results for you and your affiliates.  Affiliate tracking pixels can also be handled by you however you like to manage them.
     
     $tnt = new TntAffiliateApi();
 
