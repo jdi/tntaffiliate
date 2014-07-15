@@ -42,7 +42,7 @@ There are two options to register new affiliates into the system.  For simplicit
 Alternatively, you can create affiliates through our api, which can be done with the following call:
 
     $tnt = new TntAffiliateApi();
-    $tnt->createAffiliate(‘email’,’password’,’name’); //bool
+    $tnt->createAffiliate('email','password','name'); //bool
 
 Tracking Users (References)
 ---
@@ -78,10 +78,11 @@ When setting up actions in the control panel, you are given the option for them 
 - Cancel : This will mark the action as cancelled and not pay any commissions.
 - Fraud : Similar to cancel, no commissions will be paid, but the affiliate will also be notified about the fraudulent action.
 
-
+```
     $tnt = new TntAffiliateApi();
     //$state should be one of ‘approve’, ‘cancel’ or ‘fraud’
     $tnt->approveAction($actionId | $actionReference,$state); //bool
+```
 
 Refunds, Cancels & Fraud
 ---
