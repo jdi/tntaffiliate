@@ -1,6 +1,10 @@
 TNT Affiliate
 ============
 
+[![Latest Stable Version](https://poser.pugx.org/jdi/tntaffiliate/version.png)](https://packagist.org/packages/jdi/tntaffiliate)
+[![Total Downloads](https://poser.pugx.org/jdi/tntaffiliate/d/total.png)](https://packagist.org/packages/jdi/tntaffiliate) 
+[![Build Status](https://travis-ci.org/jdi/tntaffiliate.png)](https://travis-ci.org/jdi/tntaffiliate)
+
 Introduction
 ---
 
