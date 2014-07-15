@@ -1,0 +1,21 @@
+{
+  "name":        "jdi/tntaffiliate",
+  "license":     "MIT",
+  "authors":     [
+    {
+      "name":  "Brooke Bryan",
+      "email": "brooke@jdi.io"
+    }
+  ],
+  "require":     {
+    "php": ">=5.4.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "autoload":    {
+    "psr-4": {
+      "JDI\\TntAffiliate\\": "src"
+    }
+  }
+}
