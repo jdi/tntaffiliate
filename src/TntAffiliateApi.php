@@ -23,7 +23,7 @@ class TntAffiliateApi extends ApiBase
   {
     try
     {
-      $this->_clientPost(
+      return $this->_clientPost(
         'affiliates/create?XDEBUG_SESSION_START=1',
         [
           'email'         => $email,
@@ -31,8 +31,7 @@ class TntAffiliateApi extends ApiBase
           'name'          => $name,
           'affiliateName' => $affiliateName ?: $name
         ]
-      );
-      return true;
+      )->getStatusCode() === 200;
     }
     catch(\Exception $e)
     {
@@ -54,7 +53,14 @@ class TntAffiliateApi extends ApiBase
     {
       $visitorId = TntAffiliate::getVisitorId();
     }
-    return false;
+
+    return $this->_clientPost(
+      'tracking/reference',
+      [
+        'reference' => $reference,
+        'visitorId' => $visitorId
+      ]
+    )->getStatusCode() == 200;
   }
 
   /**
