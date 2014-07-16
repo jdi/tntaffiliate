@@ -1,7 +1,10 @@
 <?php
 namespace JDI\TntAffiliate;
 
+use JDI\TntAffiliate\Api\ApiResult;
 use JDI\TntAffiliate\Constants\RefundType;
+use JDI\TntAffiliate\Models\Action;
+use JDI\TntAffiliate\Models\ActionResponse;
 use JDI\TntAffiliate\Models\Pixel;
 
 class TntAffiliateApi extends ApiBase
@@ -38,17 +41,31 @@ class TntAffiliateApi extends ApiBase
   }
 
   /**
+   * @param Action $action
+   *
+   * @return ActionResponse
+   */
+  public function trigger(Action $action)
+  {
+    return $this->triggerAction(
+      $action->getType(),
+      $action->getVisitorId(),
+      $action->getOptions()
+    );
+  }
+
+  /**
    * Trigger an action
    *
    * @param string $action
    * @param string $visitorId Visitor ID or User Reference
    * @param array  $options
    *
-   * @return string
+   * @return ActionResponse
    */
   public function triggerAction($action, $visitorId, array $options = [])
   {
-    return '';
+    return new ActionResponse(new ApiResult());
   }
 
   /**

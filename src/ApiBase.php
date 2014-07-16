@@ -5,25 +5,21 @@ use JDI\TntAffiliate\Api\ApiClient;
 
 abstract class ApiBase
 {
+  const DEFAULT_API_URL = 'https://api.tntaffiliate.com';
   /**
    * @var ApiClient
    */
   protected $_client;
 
-  protected $_domain;
   protected $_token;
   protected $_tokenType;
 
   /**
-   * @param string $domain Your domain (domain.tld)
-   * @param null   $token
-   * @param null   $tokenType
+   * @param string $apiUrl API URL to connect to
    */
-  public function __construct($domain, $token = null, $tokenType = null)
+  public function __construct($apiUrl = self::DEFAULT_API_URL)
   {
-    $this->_domain    = $domain;
-    $this->_token     = $token;
-    $this->_tokenType = $tokenType;
+    $this->_client = new ApiClient($apiUrl);
   }
 
   /**
@@ -38,6 +34,7 @@ abstract class ApiBase
   {
     $this->_token     = $token;
     $this->_tokenType = $tokenType;
+    $this->_setAuthHeader();
     return $this;
   }
 
@@ -61,12 +58,8 @@ abstract class ApiBase
     return $this->_tokenType;
   }
 
-  protected function _clientPost($call, array $params)
+  protected function _clientPost($call, array $params = [])
   {
-    if($this->_domain && !isset($params['domain']))
-    {
-      $params['domain'] = $this->_domain;
-    }
     return $this->_client->post($call, $params);
   }
 
@@ -87,6 +80,8 @@ abstract class ApiBase
    * @param       $clientId
    * @param       $clientSecret
    * @param array $options
+   *
+   * @return bool
    */
   public function login($clientId, $clientSecret, array $options = null)
   {
@@ -95,15 +90,34 @@ abstract class ApiBase
       array_merge(
         (array)$options,
         [
-          'grant_type'    => 'Client_credentials',
+          'grant_type'    => 'client_credentials',
           'client_id'     => $clientId,
           'client_secret' => $clientSecret,
         ]
       )
     );
+    if($result->getStatusCode() == 200)
+    {
+      $result = (array)$result->getResult();
 
-    $result = (array)$result->getResult();
-    $this->setToken($result['access_token'], $result['token_type']);
-    $this->_setAuthHeader();
+      $this->setToken($result['access_token'], $result['token_type']);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Retrieve the API Version number
+   *
+   * @return string
+   */
+  public function getVersion()
+  {
+    return $this->_clientPost('version')->getResult();
+  }
+
+  public function whoami()
+  {
+    return $this->_clientPost('auth/whoami')->getResult();
   }
 }
