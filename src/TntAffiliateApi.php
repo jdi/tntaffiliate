@@ -12,19 +12,25 @@ class TntAffiliateApi extends ApiBase
   /**
    * Create a new affiliate
    *
-   * @param string $email    Affiliates email address
-   * @param string $password Affiliates raw password
-   * @param string $name     Affiliates Name
+   * @param string $email         Affiliates email address
+   * @param string $password      Affiliates raw password
+   * @param string $name          Affiliates Name
+   * @param string $affiliateName Affiliate Company Name
    *
    * @return bool
    */
-  public function createAffiliate($email, $password, $name)
+  public function createAffiliate($email, $password, $name, $affiliateName = '')
   {
     try
     {
       $this->_clientPost(
-        'affiliates/create',
-        ['name' => $name, 'email' => $email, 'password' => $password]
+        'affiliates/create?XDEBUG_SESSION_START=1',
+        [
+          'email'         => $email,
+          'password'      => $password,
+          'name'          => $name,
+          'affiliateName' => $affiliateName ?: $name
+        ]
       );
       return true;
     }
