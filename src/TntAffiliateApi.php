@@ -20,6 +20,17 @@ class TntAffiliateApi extends ApiBase
    */
   public function createAffiliate($email, $password, $name)
   {
+    try
+    {
+      $this->_clientPost(
+        'affiliates/create',
+        ['name' => $name, 'email' => $email, 'password' => $password]
+      );
+      return true;
+    }
+    catch(\Exception $e)
+    {
+    }
     return false;
   }
 
