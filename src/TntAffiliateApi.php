@@ -1,10 +1,11 @@
 <?php
 namespace JDI\TntAffiliate;
 
-use JDI\TntAffiliate\Constants\RefundType;
 use JDI\TntAffiliate\Models\ActionOptions;
 use JDI\TntAffiliate\Models\ActionResponse;
+use JDI\TntAffiliate\Models\ApproveOptions;
 use JDI\TntAffiliate\Models\Pixel;
+use JDI\TntAffiliate\Models\RefundOptions;
 
 class TntAffiliateApi extends ApiBase
 {
@@ -23,7 +24,7 @@ class TntAffiliateApi extends ApiBase
     try
     {
       return $this->_clientPost(
-        'affiliates/create?XDEBUG_SESSION_START=1',
+        'affiliates/create',
         [
           'email'         => $email,
           'password'      => $password,
@@ -77,7 +78,7 @@ class TntAffiliateApi extends ApiBase
   {
     return new ActionResponse(
       $this->_clientPost(
-        'actions/trigger?XDEBUG_SESSION_START=1',
+        'actions/trigger',
         [
           'type'      => $action,
           'reference' => $visitorId,
@@ -88,30 +89,42 @@ class TntAffiliateApi extends ApiBase
   }
 
   /**
-   * @param string $actionRef visitor ID or action reference e.g. Order ID
-   * @param string $state     ApprovalState::
+   * Approve or decline a pending action
+   *
+   * @param string         $actionId visitor ID or action reference e.g. Order ID
+   * @param string         $state    ApprovalState::
+   * @param ApproveOptions $options
    *
    * @return bool
    */
-  public function approveAction($actionRef, $state)
+  public function approveAction(
+    $actionId, $state, ApproveOptions $options = null
+  )
   {
-    return false;
+    return $this->_clientPost(
+      'actions/approval',
+      [
+        'reference' => $actionId,
+        'state'     => $state,
+        'options'   => json_encode($options)
+      ]
+    )->getStatusCode() === 200;
   }
 
   /**
    * Refund an action
    *
-   * @param string $actionId
-   * @param string $type
-   * @param array  $options
+   * @param string        $actionId
+   * @param RefundOptions $options
    *
    * @return bool
    */
-  public function refund(
-    $actionId, $type = RefundType::REFUND, array $options = []
-  )
+  public function refund($actionId, RefundOptions $options = null)
   {
-    return false;
+    return $this->_clientPost(
+      'actions/refund',
+      ['reference' => $actionId, 'options' => json_encode($options)]
+    )->getStatusCode() === 200;
   }
 
   /**
@@ -128,6 +141,9 @@ class TntAffiliateApi extends ApiBase
       $visitorId = TntAffiliate::getVisitorId();
     }
 
-    return [];
+    return $this->_clientPost(
+      'pixels/pending',
+      ['visitorId' => $visitorId]
+    )->getResult();
   }
 }

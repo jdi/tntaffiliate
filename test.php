@@ -169,10 +169,11 @@ writeLine();
  * Refund the sale
  */
 writeLine("Refunding order id " . $orderId);
-$refunded = $api->refund(
-  $orderId,
-  \JDI\TntAffiliate\Constants\RefundType::REFUND
-);
+$refundOptions         = new \JDI\TntAffiliate\Models\RefundOptions();
+$refundOptions->type   = \JDI\TntAffiliate\Models\RefundOptions::PERCENT;
+$refundOptions->amount = 50;
+
+$refunded = $api->refund($orderId, $refundOptions);
 if($refunded)
 {
   writeLine("$tick Refunded order id " . $orderId);
