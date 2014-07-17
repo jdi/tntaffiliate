@@ -1,9 +1,8 @@
 <?php
 namespace JDI\TntAffiliate;
 
-use JDI\TntAffiliate\Api\ApiResult;
 use JDI\TntAffiliate\Constants\RefundType;
-use JDI\TntAffiliate\Models\Action;
+use JDI\TntAffiliate\Models\ActionOptions;
 use JDI\TntAffiliate\Models\ActionResponse;
 use JDI\TntAffiliate\Models\Pixel;
 
@@ -64,31 +63,28 @@ class TntAffiliateApi extends ApiBase
   }
 
   /**
-   * @param Action $action
-   *
-   * @return ActionResponse
-   */
-  public function trigger(Action $action)
-  {
-    return $this->triggerAction(
-      $action->getType(),
-      $action->getVisitorId(),
-      $action->getOptions()
-    );
-  }
-
-  /**
    * Trigger an action
    *
-   * @param string $action
-   * @param string $visitorId Visitor ID or User Reference
-   * @param array  $options
+   * @param string        $action
+   * @param string        $visitorId Visitor ID or User Reference
+   * @param ActionOptions $options
    *
    * @return ActionResponse
    */
-  public function triggerAction($action, $visitorId, array $options = [])
+  public function triggerAction(
+    $action, $visitorId, ActionOptions $options = null
+  )
   {
-    return new ActionResponse(new ApiResult());
+    return new ActionResponse(
+      $this->_clientPost(
+        'actions/trigger?XDEBUG_SESSION_START=1',
+        [
+          'type'      => $action,
+          'reference' => $visitorId,
+          'options'   => json_encode($options)
+        ]
+      )
+    );
   }
 
   /**

@@ -105,7 +105,7 @@ writeLine();
 /**
  * Create a test visitor ID - Be sure not to change this to avoid conflict
  */
-$visitorId = 'VID:1234567890123123123123';
+$visitorId = 'VIS:1234567890123123123123';
 
 /**
  * Trigger a join
@@ -113,12 +113,16 @@ $visitorId = 'VID:1234567890123123123123';
 $userId = 123;
 
 writeLine("Triggering a join action");
-$action = new \JDI\TntAffiliate\Models\Action('join', $visitorId);
-//Create a reference for the visitor ID with our user id for future calls
-$action->setOption('visitor_reference', $userId);
-$action->setOption('data', ['user_id' => $userId, 'email' => 'test@abc.com']);
-$action->setOption('pixels', false);
-$joinActionId = $api->trigger($action)->getActionId();
+$joinOptions                 = new \JDI\TntAffiliate\Models\ActionOptions();
+$joinOptions->userReference  = $userId;
+$joinOptions->eventReference = 'myjoinref';
+$joinOptions->data           = [
+  'user_id' => $userId,
+  'email'   => 'test@abc.com'
+];
+
+$joinActionId = $api->triggerAction('join', $visitorId, $joinOptions)
+  ->getActionId();
 writeLine("$tick Join triggered, resulting in action ID '$joinActionId'");
 writeLine();
 
@@ -128,13 +132,14 @@ writeLine();
 $orderId = 345;
 
 writeLine("Triggering a sale action");
-$action = new \JDI\TntAffiliate\Models\Action('sale', $visitorId);
+$saleOptions = new \JDI\TntAffiliate\Models\ActionOptions();
 //Create a reference for the visitor ID with our user id for future calls
-$action->setOption('reference', $orderId);
-$action->setOption('amount', 10.95);
-$action->setOption('data', ['product' => "eBook 1"]);
-$action->setOption('pixels', true);
-$saleAction = $api->trigger($action);
+$saleOptions->eventReference = $orderId;
+$saleOptions->amount         = 10.95;
+$saleOptions->data           = ['product' => "eBook 1"];
+$saleOptions->pixels         = true;
+
+$saleAction = $api->triggerAction('sale', $userId, $saleOptions);
 writeLine(
   "$tick Sale triggered, resulting in action ID '"
   . $saleAction->getActionId() . "', "
