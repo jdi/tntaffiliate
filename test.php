@@ -151,9 +151,12 @@ writeLine();
  * Approve the sale
  */
 writeLine("Approving sale action for order id " . $orderId);
-$approved = $api->approveAction(
+$approveOptions       = new \JDI\TntAffiliate\Models\ApproveOptions();
+$approveOptions->type = 'sale';
+$approved             = $api->approveAction(
   $orderId,
-  \JDI\TntAffiliate\Constants\ApprovalState::APPROVE
+  \JDI\TntAffiliate\Constants\ApprovalState::APPROVE,
+  $approveOptions
 );
 if($approved)
 {
@@ -170,11 +173,11 @@ writeLine();
  */
 writeLine("Refunding order id " . $orderId);
 $refundOptions             = new \JDI\TntAffiliate\Models\RefundOptions();
-$refundOptions->type       = \JDI\TntAffiliate\Models\RefundOptions::TYPE_FRAUD;
+$refundOptions->type       = 'sale';
 $refundOptions->fullRefund = true;
 $refundOptions->reclaim    = \JDI\TntAffiliate\Models\RefundOptions::RECLAIM_BOTH;
 $refundOptions->reason     = 'fraudulent';
-$refundOptions->amount     = 39.99;
+$refundOptions->amount     = 5;
 
 $refunded = $api->refund($orderId, $refundOptions);
 if($refunded)

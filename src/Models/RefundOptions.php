@@ -3,10 +3,6 @@ namespace JDI\TntAffiliate\Models;
 
 class RefundOptions implements \JsonSerializable
 {
-  const TYPE_REFUND = 'refund';
-  const TYPE_CANCEL = 'cancel';
-  const TYPE_FRAUD = 'fraud';
-
   const RECLAIM_FIXED = 'fixed';
   const RECLAIM_PERCENT = 'percent';
   const RECLAIM_COMMISSION = 'commission';
