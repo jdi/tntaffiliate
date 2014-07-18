@@ -169,9 +169,12 @@ writeLine();
  * Refund the sale
  */
 writeLine("Refunding order id " . $orderId);
-$refundOptions         = new \JDI\TntAffiliate\Models\RefundOptions();
-$refundOptions->type   = \JDI\TntAffiliate\Models\RefundOptions::PERCENT;
-$refundOptions->amount = 50;
+$refundOptions             = new \JDI\TntAffiliate\Models\RefundOptions();
+$refundOptions->type       = \JDI\TntAffiliate\Models\RefundOptions::TYPE_FRAUD;
+$refundOptions->fullRefund = true;
+$refundOptions->reclaim    = \JDI\TntAffiliate\Models\RefundOptions::RECLAIM_BOTH;
+$refundOptions->reason     = 'fraudulent';
+$refundOptions->amount     = 39.99;
 
 $refunded = $api->refund($orderId, $refundOptions);
 if($refunded)

@@ -4,6 +4,7 @@ namespace JDI\TntAffiliate\Models;
 class ApproveOptions implements \JsonSerializable
 {
   public $type;
+  public $reason;
 
   public function jsonSerialize()
   {
