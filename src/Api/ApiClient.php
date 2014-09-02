@@ -101,7 +101,7 @@ class ApiClient
       $this->_baseUri . '/' . $call,
       $options
     );
-
+    $request->getConfig()->set('curl',[CURLOPT_SSLVERSION => 3]);
     if($this->_headers)
     {
       foreach($this->_headers as $header => $value)
