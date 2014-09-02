@@ -71,11 +71,25 @@ class TntAffiliateApi extends ApiBase
    * @param ActionOptions $options
    *
    * @return ActionResponse
+   *
+   * @throws \Exception
    */
   public function triggerAction(
     $action, $visitorId, ActionOptions $options = null
   )
   {
+    if($visitorId === null)
+    {
+      $visitorId = TntAffiliate::getVisitorId();
+    }
+
+    if(empty($visitorId))
+    {
+      throw new \Exception(
+        "A visitor ID or reference is required to trigger an action"
+      );
+    }
+
     return new ActionResponse(
       $this->_clientPost(
         'actions/trigger',
@@ -133,6 +147,8 @@ class TntAffiliateApi extends ApiBase
    * @param null $visitorId if null, visitor ID will be attempted automatically
    *
    * @return Pixel[]
+   *
+   * @throws \Exception
    */
   public function getPendingPixels($visitorId = null)
   {
@@ -141,9 +157,48 @@ class TntAffiliateApi extends ApiBase
       $visitorId = TntAffiliate::getVisitorId();
     }
 
+    if(empty($visitorId))
+    {
+      throw new \Exception(
+        "A visitor ID or reference is required to trigger an action"
+      );
+    }
+
     return $this->_clientPost(
       'pixels/pending',
       ['visitorId' => $visitorId]
     )->getResult();
+  }
+
+  /**
+   * Create a new visitor ID
+   *
+   * @param string $clientIp     IP Address of the client
+   * @param string $type         Traffic Type e.g. Direct
+   * @param bool   $setCookie    Set the Cookie on the clients device
+   * @param string $cookieDoamin Domain to set the cookie on, recommended to .yourdomain.tld
+   *
+   * @return string Visitor ID
+   */
+  public function createVisitorId(
+    $clientIp = null, $type = 'direct', $setCookie = false, $cookieDoamin = null
+  )
+  {
+    if($clientIp === null)
+    {
+      $clientIp = TntAffiliate::getClientIp();
+    }
+
+    $visitorId = $this->_clientPost(
+      'visitors/create-id',
+      ['type' => $type, 'client_ip' => $clientIp]
+    )->getResult();
+
+    if($setCookie)
+    {
+      setcookie('TNT:VID', $visitorId, 2592000, '/', $cookieDoamin);
+    }
+
+    return $visitorId;
   }
 }
