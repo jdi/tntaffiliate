@@ -173,6 +173,7 @@ class TntAffiliateApi extends ApiBase
   /**
    * Create a new visitor ID
    *
+   * @param string $productId    TNTs Product ID for the visitor
    * @param string $clientIp     IP Address of the client
    * @param string $type         Traffic Type e.g. Direct
    * @param bool   $setCookie    Set the Cookie on the clients device
@@ -181,7 +182,8 @@ class TntAffiliateApi extends ApiBase
    * @return string Visitor ID
    */
   public function createVisitorId(
-    $clientIp = null, $type = 'direct', $setCookie = false, $cookieDoamin = null
+    $productId, $clientIp = null, $type = 'direct', $setCookie = false,
+    $cookieDoamin = null
   )
   {
     if($clientIp === null)
@@ -191,7 +193,12 @@ class TntAffiliateApi extends ApiBase
 
     $visitorId = $this->_clientPost(
       'visitors/create-id',
-      ['type' => $type, 'client_ip' => $clientIp]
+      [
+        'type'          => $type,
+        'client_ip'     => $clientIp,
+        'product'       => $productId,
+        'cookie_domain' => $cookieDoamin
+      ]
     )->getResult();
 
     if($setCookie)
