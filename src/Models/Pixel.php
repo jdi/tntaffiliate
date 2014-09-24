@@ -46,8 +46,10 @@ class Pixel
       case self::METHOD_IFRAME:
         return $this->_renderIframe();
       case self::METHOD_IMAGE:
+      case 'image':
         return $this->_renderImage();
       case self::METHOD_JS:
+      case 'javascript':
         return $this->_renderJavascript();
     }
 
