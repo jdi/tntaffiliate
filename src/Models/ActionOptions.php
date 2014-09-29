@@ -6,6 +6,7 @@ class ActionOptions implements \JsonSerializable
   public $userReference;
   public $eventReference;
   public $amount;
+  public $coupon;
   public $data;
   public $pixels = false;
 
