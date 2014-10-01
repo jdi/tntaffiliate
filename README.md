@@ -46,7 +46,8 @@ There are two options to register new affiliates into the system.  For simplicit
 Alternatively, you can create affiliates through our api, which can be done with the following call:
 
     $tnt = new TntAffiliateApi();
-    $tnt->createAffiliate('email','password','name'); //bool
+    
+    $tnt->createAffiliate('email','password','name');
 
 Tracking Users (References)
 ---
@@ -55,10 +56,9 @@ As soon as you have your own unique identifier for a visitor, you can provide tn
 The visitor ID is placed in a cookie on your domain with the name of “TNT:VID”.  The TntAffiliate class contains a helper method to pull this cookie back from the php superglobal $_COOKIE, however, if you read cookies through alternative methods, it is recommened to pull the visitor id manually.
 
     $tnt = new TntAffiliateApi();
-    //Attempts to pull visitor id from $_COOKIE
-    $visitorId = TntAffiliate::getVisitorId();
-    //Create the reference
-    $tnt->visitorReference('reference', $visitorId); //bool
+
+    $visitorId = TntAffiliate::getVisitorId();       // Attempts to pull visitor id from $_COOKIE
+    $tnt->visitorReference('reference', $visitorId); // Create the reference
     
 Actions
 ---
@@ -66,20 +66,15 @@ The preferred method for tracking actions from your site is through curl.  This 
     
     $tnt = new TntAffiliateApi();
 
-    $actionOptions = new \JDI\TntAffiliate\Models\ActionOptions();
-
-    // Action reference, e.g. Order ID
-    $actionOptions->eventReference = 'my_action_reference';
-    // User Reference. if a visitor ID is provided, this will store the reference for future calls.
-    $actionOptions->userReference  = $userId;
-    // Any custom data you wish to allocate to the action, which will be available in the future.
-    $actionOptions->data           = [
+    $actionOptions                 = new \JDI\TntAffiliate\Models\ActionOptions();
+    $actionOptions->eventReference = 'my_action_reference';     // Action reference, e.g. Order ID
+    $actionOptions->userReference  = $userId;    // User Reference. if a visitor ID is provided, this will store the reference for future calls.
+    $actionOptions->pixels         = false;      // Whether to return pixels to fire
+    $actionOptions->data           = [   // Any custom data you wish to allocate to the action, which will be available in the future.
       'user_id'    => $userId,
       'email'      => 'test@abc.com',
       'other_data' => 'some other information'
     ];
-    // Whether to return pixels to fire
-    $actionOptions->pixels         = false;
 
     $actionId = $api->triggerAction('action_key', $visitorId, $actionOptions)->getActionId();
 
@@ -104,13 +99,6 @@ Refunds, Cancels & Fraud
 Sometimes, your customers decide they no longer wish to use your product, in this case, you can choose
 
     $tnt = new TntAffiliateApi();
-    $type  // should be one of 'refund', 'cancel', 'fraud'
-    $options = [];
-    $options['amount'] //Refund amount to customer
-    $options['full_refund'] //bool, is whole action refunded
-    $options['reclaim'] //reserve,commission,none,percent,fixed
-    $options['reclaim_amount'] // if % or fixed, reclaim this amount
-    $tnt->refund($actionId | $actionReference,$type,$options); //bool
 
     $refundOptions             = new \JDI\TntAffiliate\Models\RefundOptions();
     $refundOptions->type       = 'action_type';
@@ -126,6 +114,6 @@ Firing Pixels
 When actions are triggered, pixels can be queued based on the involved affiliate etc.  It is recommended to pull these pixels back at the time of the action to fire them as close to the time as possible, and to avoid checking the queue constantly.
 
     $tnt = new TntAffiliateApi();
+
     $visitorId = TntAffiliate::getVisitorId(); //A User Reference is also valid
     $tnt->getPendingPixels($visitorId); //array of pending pixels
-
