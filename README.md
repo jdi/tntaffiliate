@@ -58,7 +58,7 @@ The visitor ID is placed in a cookie on your domain with the name of “TNT:VID�
     //Attempts to pull visitor id from $_COOKIE
     $visitorId = TntAffiliate::getVisitorId();
     //Create the reference
-    $tnt->visitorReference(’reference’,$visitorId); //bool
+    $tnt->visitorReference('reference', $visitorId); //bool
     
 Actions
 ---
@@ -66,15 +66,22 @@ The preferred method for tracking actions from your site is through curl.  This 
     
     $tnt = new TntAffiliateApi();
 
-    $options = [];
-    $options[‘reference’]// Action reference, e.g. Order ID
-    $options[‘visitor_reference’]//User Reference, If a visitor ID is provided, this will set register the reference for future calls.
-    $options[‘amount’]//Amount of the action e.g. order total
-    $options[‘data’] = []; //Any custom data you wish to allocate to the action, which will be available in the future.
-    
-    $options[‘pixels’] //bool : retrieve any custom pixels required for affiliates.  Setting this to true will automatically pull pending pixels from the queue for that visitor, and expect to be triggered.  If you take no action on these pixels, they will not be re-queued.
-    
-    $tnt->triggerAction(‘action’,’visitorId’ | ‘reference’,$options=[]);//Action ID
+    $actionOptions = new \JDI\TntAffiliate\Models\ActionOptions();
+
+    // Action reference, e.g. Order ID
+    $actionOptions->eventReference = 'my_action_reference';
+    // User Reference. if a visitor ID is provided, this will store the reference for future calls.
+    $actionOptions->userReference  = $userId;
+    // Any custom data you wish to allocate to the action, which will be available in the future.
+    $actionOptions->data           = [
+      'user_id'    => $userId,
+      'email'      => 'test@abc.com',
+      'other_data' => 'some other information'
+    ];
+    // Whether to return pixels to fire
+    $actionOptions->pixels         = false;
+
+    $actionId = $api->triggerAction('action_key', $visitorId, $actionOptions)->getActionId();
 
 Approving Actions
 ---
@@ -84,24 +91,35 @@ When setting up actions in the control panel, you are given the option for them 
 - Cancel : This will mark the action as cancelled and not pay any commissions.
 - Fraud : Similar to cancel, no commissions will be paid, but the affiliate will also be notified about the fraudulent action.
 
-```
-    $tnt = new TntAffiliateApi();
-    //$state should be one of ‘approve’, ‘cancel’ or ‘fraud’
-    $tnt->approveAction($actionId | $actionReference,$state); //bool
-```
+    $approveOptions       = new \JDI\TntAffiliate\Models\ApproveOptions();
+    $approveOptions->type = 'action_type';
+    $approved             = $api->approveAction(
+      $eventReference, // Action reference, e.g. Order ID
+      \JDI\TntAffiliate\Constants\ApprovalState::APPROVE,
+      $approveOptions
+    );
 
 Refunds, Cancels & Fraud
 ---
 Sometimes, your customers decide they no longer wish to use your product, in this case, you can choose
 
     $tnt = new TntAffiliateApi();
-    $type// should be one of ‘refund’, ‘cancel’, ‘fraud’
+    $type  // should be one of 'refund', 'cancel', 'fraud'
     $options = [];
-    $options[‘amount’]//Refund amount
-    $options[‘full_refund’]//bool, is whole action refunded
-    $options[‘reclaim’]//reserve,commission,both,none
-    $options[‘force_reclaim’]//If commissions have already been paid out, setting this option will create a refund amount for paid commissions to be applied to the paycheck.  This option is not recommended, and you should have paychecks or reserves etc to a time after refunds can be taken from the affiliate.
+    $options['amount'] //Refund amount to customer
+    $options['full_refund'] //bool, is whole action refunded
+    $options['reclaim'] //reserve,commission,none,percent,fixed
+    $options['reclaim_amount'] // if % or fixed, reclaim this amount
     $tnt->refund($actionId | $actionReference,$type,$options); //bool
+
+    $refundOptions             = new \JDI\TntAffiliate\Models\RefundOptions();
+    $refundOptions->type       = 'action_type';
+    $refundOptions->fullRefund = true;
+    $refundOptions->reclaim    = \JDI\TntAffiliate\Models\RefundOptions::RECLAIM_BOTH;
+    $refundOptions->reason     = 'fraudulent';
+    $refundOptions->amount     = 5;
+
+    $refunded = $api->refund($orderId, $refundOptions);
 
 Firing Pixels
 ---
