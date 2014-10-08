@@ -135,10 +135,18 @@ class TntAffiliateApi extends ApiBase
    */
   public function refund($actionId, RefundOptions $options = null)
   {
-    return $this->_clientPost(
-      'actions/refund',
-      ['reference' => $actionId, 'options' => json_encode($options)]
-    )->getStatusCode() === 200;
+    try
+    {
+      $response = $this->_clientPost(
+        'actions/refund',
+        ['reference' => $actionId, 'options' => json_encode($options)]
+      );
+      return $response->getStatusCode() === 200 && $response->getResult();
+    }
+    catch(\Exception $e)
+    {
+      return false;
+    }
   }
 
   /**
