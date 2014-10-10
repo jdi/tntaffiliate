@@ -102,10 +102,7 @@ Sometimes, your customers decide they no longer wish to use your product, in thi
 
     $refundOptions             = new \JDI\TntAffiliate\Models\RefundOptions();
     $refundOptions->type       = 'action_type';
-    $refundOptions->fullRefund = true;
-    $refundOptions->reclaim    = \JDI\TntAffiliate\Models\RefundOptions::RECLAIM_BOTH;
     $refundOptions->reason     = 'fraudulent';
-    $refundOptions->amount     = 5;
 
     $refunded = $api->refund($orderId, $refundOptions);
 
