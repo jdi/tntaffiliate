@@ -12,17 +12,19 @@ class ActionResponse
   protected $_sid1;
   protected $_sid2;
   protected $_sid3;
+  protected $_commission;
 
   public function __construct(ApiResult $result)
   {
-    $res              = $result->getResult();
-    $this->_actionId  = isset($res->actionId) ? $res->actionId : null;
-    $this->_pixels    = isset($res->pixels) ? $res->pixels : null;
-    $this->_sid1      = isset($res->sid1) ? $res->sid1 : null;
-    $this->_sid2      = isset($res->sid2) ? $res->sid2 : null;
-    $this->_sid3      = isset($res->sid3) ? $res->sid3 : null;
-    $this->_affiliate = isset($res->affiliate) ? $res->affiliate : null;
-    $this->_campaign  = isset($res->campaign) ? $res->campaign : null;
+    $res               = $result->getResult();
+    $this->_actionId   = isset($res->actionId) ? $res->actionId : null;
+    $this->_pixels     = isset($res->pixels) ? $res->pixels : null;
+    $this->_sid1       = isset($res->sid1) ? $res->sid1 : null;
+    $this->_sid2       = isset($res->sid2) ? $res->sid2 : null;
+    $this->_sid3       = isset($res->sid3) ? $res->sid3 : null;
+    $this->_affiliate  = isset($res->affiliate) ? $res->affiliate : null;
+    $this->_campaign   = isset($res->campaign) ? $res->campaign : null;
+    $this->_commission = isset($res->commission) ? $res->commission : null;
   }
 
   public function getActionId()
@@ -66,5 +68,10 @@ class ActionResponse
   public function getSid3()
   {
     return $this->_sid3;
+  }
+
+  public function getCommission()
+  {
+    return $this->_commission;
   }
 }
