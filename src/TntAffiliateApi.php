@@ -185,13 +185,13 @@ class TntAffiliateApi extends ApiBase
    * @param string $clientIp     IP Address of the client
    * @param string $type         Traffic Type e.g. Direct
    * @param bool   $setCookie    Set the Cookie on the clients device
-   * @param string $cookieDoamin Domain to set the cookie on, recommended to .yourdomain.tld
+   * @param string $cookieDomain Domain to set the cookie on, recommended to .yourdomain.tld
    *
    * @return string Visitor ID
    */
   public function createVisitorId(
     $productId, $clientIp = null, $type = 'direct', $setCookie = false,
-    $cookieDoamin = null
+    $cookieDomain = null
   )
   {
     if($clientIp === null)
@@ -205,13 +205,13 @@ class TntAffiliateApi extends ApiBase
         'type'          => $type,
         'client_ip'     => $clientIp,
         'product'       => $productId,
-        'cookie_domain' => $cookieDoamin
+        'cookie_domain' => $cookieDomain
       ]
     )->getResult();
 
     if($setCookie)
     {
-      setcookie('TNT:VID', $visitorId, 2592000, '/', $cookieDoamin);
+      setcookie('TNT:VID', $visitorId, 2592000, '/', $cookieDomain);
     }
 
     return $visitorId;
